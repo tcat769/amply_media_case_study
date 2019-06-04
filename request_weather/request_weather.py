@@ -25,6 +25,7 @@ class Weather(Resource):
         returnable['city'] = d.get('today').get('city')
         returnable['state'] = d.get('today').get('state')
         logger.info(f"{request.remote_addr} - Request for Weather made from {returnable.get('city')}, {returnable.get('state')}.")
+        logger.info(f"Used cache? {r.from_cache}")
         daily_list = d.get('daily')[:3]
 
         daily_weather_dict = {}
