@@ -1,19 +1,17 @@
-#!/usr/bin/env python
-import logging
-from flask import Flask
-from flask_restful import Api
-from my_logger import my_logger
-from request_weather import request_weather
+"""Main entry point to the flask endpoint.  Configures the app to run locally."""
 
-# initialize logger
-logger = logging.getLogger('amcs')
+import requests_cache
+from logging_utils.my_logger import setup_logger
+from constants import LOG_FILE
+from app.flask_app import flask_app
+from blueprints.weather import weather_api
 
-# create flask and api objects
-amcs_app = Flask('amcs_app')
-amcs_api = Api(amcs_app)
+setup_logger(LOG_FILE)
 
-# add our weather resource
-amcs_api.add_resource(request_weather.Weather, '/weather')
+requests_cache.install_cache('test_flask_app', expire_after=600)
+
+flask_app.register_blueprint(weather_api.weather_blueprint)
+
 
 if __name__ == '__main__':
-     amcs_app.run(host='0.0.0.0', port='5002')
+    flask_app.run(host='0.0.0.0', port='5002')
